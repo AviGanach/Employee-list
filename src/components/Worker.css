@@ -1,7 +1,9 @@
 #image_bin{
-    width: 60px;
-    margin: 25px 300px;
-padding: 10px;
+    width: 30px;
+    
+    /* float: inline-end; */
+    /* margin: 25px 850px; */
+    /* padding: 10px; */
 
 }
 
