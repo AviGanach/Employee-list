@@ -1,94 +1,88 @@
-import React, { useRef } from "react";
-
+import React, { useState } from "react";
+import "./AddWorker.css";
+import PropTypes from "prop-types";
 
 function AddWorker(props) {
-  const { WorkerArr, updateListWorkers } = props;
-//--- Dada from input ---//
-  const nameRef = useRef();
-  const ageRef = useRef();
-  const IDRef = useRef();
+  const { WorkersArr, updateListWorkers } = props;
+  //--- Dada from input ---//
+  const [name, setName] = useState("");
+  const [ID, setID] = useState("");
+  const [age, setAge] = useState("");
 
-//--- adding an employee ---//
+  //--- adding a valid employee and error 'alert'---//
   const onAddWorker = () => {
-
-    //--- Controls the alert and function call 'updateListWorkers'---//
-    let flag = true;
-
-    //--- Checks that there is no empty input field ---//
-    if (nameRef.current.value === "" ||
-        ageRef.current.value === "" ||
-        IDRef.current.value === ""){          
-      flag = false;
+    if (name === "" || ID === "" || age === "") {
       alert("You must fill all fields");
-    } else {
-      //--- Values from the input fields ---//
-      const newObj = {
-        name: nameRef.current.value,
-        //--- Conversion to a number (for the LODASH) ---//
-        age: Number(ageRef.current.value),
-        ID: IDRef.current.value,
-      };
-
-      //--- check that ID unique ---//
-      WorkerArr.forEach((element) => {
-        if (element.ID === IDRef.current.value) {
-          flag = false;
-        }
-      });
-
-      if (flag) {
-        updateListWorkers([...WorkerArr, newObj]);
-      } else {
-        alert("ID already exists");
-      }
+      return;
     }
 
-    //--- Resets the input field ---//
-    nameRef.current.value = "";
-    ageRef.current.value = "";
-    IDRef.current.value = "";
+    //--- check that ID unique ---//
+    Array.isArray(WorkersArr) && WorkersArr.forEach((element) => {
+      if (element.ID === ID) {
+        alert("ID already exists");
+        return;
+      }
+    });
+
+    //--- obj for valid employee ---//
+    const newObj = {
+      name: name,
+      //--- Conversion to a number (for the LODASH) ---//
+      age: Number(age),
+      ID: ID,
+    };
+    
+    updateListWorkers([...WorkersArr, newObj]);
+    setName("");
+    setID("");
+    setAge("");
   };
 
   return (
-    <div className="row mx-auto border w-50 ">
-      <div className="col-6">
-        <label className="">Name:</label>
+    <div className="addWorkerForm">
+      <div className="styleContainerInput">
+        <label className="labelStyle" >Name:</label>
         <br />
         <input
-          className=""
-          ref={nameRef}
+          onChange={(e) => setName(e.target.value)}
+          value={name}
           type="text"
           required={true}
           placeholder={"name"}
         />
       </div>
-      <div className="col-6">
-        <label className="">Age:</label>
+      <div  className="styleContainerInput">
+        <label className="labelStyle">Age:</label>
         <br />
         <input
-          ref={ageRef}
           type="number"
-          className=""
+          onChange={(e) => setAge(e.target.value)}
+          value={age}
           required={true}
           placeholder={"age"}
         />
       </div>
-      <div className="col-6">
-        <label className="">ID:</label>
+      <div className="styleContainerInput">
+        <label className="labelStyle ">ID:</label>
         <br></br>
         <input
-          ref={IDRef}
           type="text"
-          className=""
+          onChange={(e) => setID(e.target.value)}
+          value={ID}
           required={true}
           placeholder={"ID"}
         />
       </div>
-
-      <button className="btn btn-info mt-2" onClick={onAddWorker}>
-        Add worker
-      </button>
+      <div>
+        <button className="addWorkerBtn" onClick={onAddWorker}>
+          Add worker
+        </button>
+      </div>
     </div>
   );
 }
+AddWorker.propTypes = {
+  WorkersArr: PropTypes.array,
+  updateListWorkers: PropTypes.func,
+};
 export default AddWorker;
